@@ -2,7 +2,7 @@
 <html class="no-js" lang="">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Art Generator</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="og:title" content="Codeplant Logo">
@@ -13,18 +13,135 @@
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.3/font/bootstrap-icons.min.css" integrity="sha512-YzwGgFdO1NQw1CZkPoGyRkEnUTxPSbGWXvGiXrWk8IeSqdyci0dEDYdLLjMxq1zCoU0QBa4kHAFiRhUL3z2bow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <meta name="theme-color" content="#fafafa">
 </head>
 <body style="text-align: center;">
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      
+      <span class="navbar-brand mb-0 h1"><img src="logo.png" width="50"/>&nbsp;&nbsp;&nbsp;Art Generator</span>
+    </div>
+  </nav>
+  <div class="container">
+    <br />
+    <div class="row">
+      <div class="col-lg-2">
+        <div class="container">
+          <div class="row"  style="text-align: center;">
+    
+              <div style="width: 100%" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked fullWidth>
+                <label class="btn btn-outline" for="btnradio1"><i class="bi bi-lightbulb" style="font-size: 30px;"></i></label>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" fullWidth>
+                <label class="btn btn-outline" for="btnradio2"><i class="bi bi-lightbulb-fill" style="font-size: 30px;"></i></label>
+            
+              </div>
 
-  <canvas id="can" class="zdog-canvas" width="375" height="375"></canvas>
+              <div style="margin-top: 25px; width: 100%" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio2" id="btn1" autocomplete="off" >
+                <label class="btn btn-outline" for="btn1"><i class="bi bi-circle" style="font-size: 30px;"></i></label>
+              
+                <input type="radio" class="btn-check" name="btnradio2" id="btn2" autocomplete="off">
+                <label class="btn btn-outline" for="btn2"><i class="bi bi-square" style="font-size: 30px;"></i></label>
+            
+                <input type="radio" class="btn-check" name="btnradio2" id="btn3" autocomplete="off" checked>
+                <label class="btn btn-outline" for="btn3"><i class="bi bi-circle-square" style="font-size: 30px;"></i></label>
+            
+              </div>
+      
+          </div>
 
+          <hr />
+          <select id="pallette" class="form-select" onchange="setPallette()" aria-label="Default select example">
+            <option selected>Load Pallette</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+          </select>
+ 
+
+          <hr />
+          
+          <input placeholder="color #1" class="form-control" id="color1" type="color" />
+          <input placeholder="color #2" class="form-control" id="color2" type="color" />
+          <input placeholder="color #3"class="form-control" id="color3" type="color" />
+          <input placeholder="color #4" class="form-control" id="color4" type="color" />
+          <input placeholder="color #5" class="form-control" id="color5" type="color" />
+          <br />
+          <button class="btn btn-outline" style="font-size: 30px;background-color: #868507" onclick="generateRandomColorPallette()">
+            <i class="bi bi-lightning"></i>&nbsp;Generate Random Pallette</button>
+          <hr />
+          <button class="btn" id="btndownload" style="font-size: 30px;"><i class="bi bi-download"></i>&nbsp;Download Artwork</button>
+          <br />
+      
+  
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <button class="btn btn-outline" style="font-size: 30px;width: 100%; background-color: #F8A21E;" onclick="generate()">
+          <i class="bi bi-easel"></i>&nbsp;Generate Artwork</button>
+
+        <div class="container">
+       
+        <canvas id="can" class="zdog-canvas" width="750" height="750"></canvas>
+
+          
+       
+      </div>
+      </div>
+    </div>
+  <br />
+  <br />
+
+    </div>
+  </div>
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/zfont/dist/zfont.min.js"></script>
   <script src="js/main.js"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </body>
 
+<script>
+  window.onload = function(){
+  var dwn = document.getElementById('btndownload')
+  var canvas = document.getElementById('can')
+
+  // Event handler for download
+  dwn.onclick = function(){
+
+    download(canvas, new Date().toISOString()+'.png');
+  }
+
+}
+
+function download(canvas, filename) {
+  /// create an "off-screen" anchor tag
+  var lnk = document.createElement('a'), e;
+
+  /// the key here is to set the download attribute of the a tag
+  lnk.download = filename;
+
+  /// convert canvas content to data-uri for link. When download
+  /// attribute is set the content pointed to by link will be
+  /// pushed as "download" in HTML5 capable browsers
+  lnk.href = canvas.toDataURL("image/png;base64");
+
+  /// create a "fake" click-event to trigger the download
+  if (document.createEvent) {
+    e = document.createEvent("MouseEvents");
+    e.initMouseEvent("click", true, true, window,
+                     0, 0, 0, 0, 0, false, false, false,
+                     false, 0, null);
+
+    lnk.dispatchEvent(e);
+  } else if (lnk.fireEvent) {
+    lnk.fireEvent("onclick");
+  }
+}
+</script>
 </html>
