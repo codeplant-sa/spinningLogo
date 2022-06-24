@@ -1,25 +1,51 @@
 ///////////////////////////////////
-// CODEPLANT SPINNING LOGO
+// art generator
 //////////////////////////////
 
-let boxes = []; // array to store our boxes
+let boxes = [];
 let mode = "both";
 let bg;
 const pauseTime = 10000; // time between spins
 const lrgBoxHeight = lrgBoxWidth = lrgBoxDepth = 40;
 const smBoxHeight = smBoxWidth = 20;
 const smBoxDepth = 10;
-let isSpinning = false; // flag for spinning
+let isSpinning = false;
 let grow = true;
+let groups = [];
+let mlStrength = .75
+let checker = true
 let currentBGColor = "#ffffff"
 let illo = new Zdog.Illustration({
     // set canvas with selector
     element: '.zdog-canvas',
     dragRotate: true,
-    zoom: 28,
+    zoom: 16,
     fill: false,
     translate: { y: -10 }
 });
+
+function updatePower(){
+    const power = document.getElementById('mlPower').value;
+    document.getElementById('powerValue').innerHTML = power
+    console.log(power)
+    mlStrength = Number(power);
+}
+async function startML() {
+    const mlImages = document.getElementById('mlImages');
+    mlImages.style.display = 'block';
+    
+}
+
+async function makeMLArt() {
+    const model = new mi.ArbitraryStyleTransferNetwork();
+    await model.initialize()
+    const contentImg = document.getElementById('content');
+    const styleImg = document.getElementById('styleImg');
+    const stylizedCanvas = document.getElementById('stylized');
+    model.stylize(contentImg, styleImg, mlStrength).then((imageData) => {
+        stylizedCanvas.getContext('2d').putImageData(imageData, 0, 0);
+    });
+}
 
 // (height, width, depth, x, y, color) 
 // for each box in the Codeplant logo
@@ -92,7 +118,6 @@ function generateRandomColorPallette() {
     currentBGColor = getRandomColor()
     document.getElementById('color6').value = currentBGColor
 }
-
 function getRandomFloat(min, max, decimals) {
     const str = (Math.random() * (max - min) + min).toFixed(decimals);
 
@@ -134,7 +159,6 @@ const grid = [
     { x: 15, y: 0, size: getSize(), pulse: true, color: getColor() },
     { x: 20, y: 0, size: getSize(), pulse: false, color: getColor() }
 ]
-
 const generate = () => {
     let c1 = document.getElementById('color1').value;
     let c2 = document.getElementById('color2').value;
@@ -147,7 +171,6 @@ const generate = () => {
     }
     buildGrid();
 }
-
 document.getElementById("btn1").addEventListener("click", () => {
     mode = "ellipse";
 })
@@ -157,6 +180,9 @@ document.getElementById("btn2").addEventListener("click", () => {
 document.getElementById("btn3").addEventListener("click", () => {
     mode = "both";
 })
+const transferStyle = () => {
+    startML()
+}
 var fisherYates = (array) => {
     // we start at the end of the array
     var currentIndex = array.length,
@@ -178,8 +204,6 @@ var fisherYates = (array) => {
 
     return array;
 };
-let groups = [];
-let checker = true
 const setPallette = () => {
     let pal = document.getElementById('pallette').value;
     switch (pal) {
@@ -216,7 +240,7 @@ const buildGrid = () => {
         bg.remove()
         for (let i = 0; i < boxes.length; i++) {
             boxes[i].remove()
-            
+
         }
     }
     grid.forEach((eachLocation, i) => {
@@ -229,10 +253,10 @@ const buildGrid = () => {
             translate: { z: -1 }
         })
         const randColors = fisherYates(currentPallette)
-        
-       
+
+
         if (mode === 'both') {
-           
+
             if (checker) {
 
                 boxes.push(new Zdog.Box({
@@ -253,7 +277,7 @@ const buildGrid = () => {
                 color: randColors[0],
                 translate: { y: eachLocation.y, x: eachLocation.x - 10, z: 2 }
             }));
-       
+
             boxes.push(new Zdog.Shape({
                 addTo: illo,
                 // no path set, default to single point
@@ -376,9 +400,6 @@ const buildGrid = () => {
 
     illo.updateRenderGraph();
 }
-
-
-// utility functions
 function getDepth(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }

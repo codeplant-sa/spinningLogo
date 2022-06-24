@@ -23,23 +23,26 @@
       <span class="navbar-brand mb-0 h1"><img src="logo.png" width="50"/>&nbsp;&nbsp;&nbsp;Art Generator&nbsp;</span><span style="font-size: 12px;">v1.0</span>
     </div>
   </nav>
-  <div class="container">
+
     <br />
     <div class="row">
-      <div class="col-2">
+      <div class="col-1">
+        
         <div class="container">
+          <button class="btn btn-outline" style="font-size: 30px;width: 100%; background-color: #F8A21E;" onclick="generate()">
+            <i class="bi bi-easel"></i></i></button>
           <div class="row"  style="text-align: center;">
   
 
-              <div style="margin-top: 25px; width: 100%" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+              <div style="margin-top: 25px" class="btn-group" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check" name="btnradio2" id="btn1" autocomplete="off" >
-                <label class="btn btn-outline" for="btn1"><i class="bi bi-circle" style="font-size: 30px;"></i></label>
+                <label class="btn btn-outline" for="btn1"><i class="bi bi-circle" style="font-size: 14px;"></i></label>
               
                 <input type="radio" class="btn-check" name="btnradio2" id="btn2" autocomplete="off">
-                <label class="btn btn-outline" for="btn2"><i class="bi bi-square" style="font-size: 30px;"></i></label>
+                <label class="btn btn-outline" for="btn2"><i class="bi bi-square" style="font-size: 14px;"></i></label>
             
                 <input type="radio" class="btn-check" name="btnradio2" id="btn3" autocomplete="off" checked>
-                <label class="btn btn-outline" for="btn3"><i class="bi bi-circle-square" style="font-size: 30px;"></i></label>
+                <label class="btn btn-outline" for="btn3"><i class="bi bi-circle-square" style="font-size: 14px;"></i></label>
             
               </div>
       
@@ -47,7 +50,7 @@
 
           <hr />
           <select id="pallette" class="form-select" onchange="setPallette()" aria-label="Default select example">
-            <option selected>Load Pallette</option>
+            <option selected>Pallettes</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
@@ -67,31 +70,55 @@
           <button class="btn btn-outline" style="width:100%;font-size: 30px;background-color: #868507" onclick="generateRandomColorPallette()">
             <i class="bi bi-lightning"></i></button>
           <hr />
-          <button class="btn" id="btndownload" style="font-size: 30px;"><i class="bi bi-download"></i></button>
-          <br />
-      
-  
+       
+
         </div>
       </div>
-      <div class="col-10">
-        <button class="btn btn-outline" style="font-size: 30px;width: 100%; background-color: #F8A21E;" onclick="generate()">
-          <i class="bi bi-easel"></i>&nbsp;Generate Artwork&nbsp;<i class="bi bi-easel"></i></button>
+      <div class="col-3">
+
 
         <div class="container">
        
-        <canvas id="can" style="background-color: white!important;" class="zdog-canvas" width="750" height="750"></canvas>
+        <canvas id="can" style="background-color: white!important;" class="zdog-canvas" width="450" height="450"></canvas>
+<hr />
+<button class="btn" id="btndownload" style="font-size: 30px;"><i class="bi bi-download"></i></button>
 
           
        
       </div>
+      </div>
+      <div class="col-3">
+        <button class="btn" id="btnmlinit" style="font-size: 30px;"><i class="bi bi-check2"></i></button>
+          <br />
+          <label for="customRange1" class="form-label">Transfer Power <span id="powerValue">0.5</span></label>
+          <input type="range" min="0.0" max="1.0" step="0.005" class="form-range" onchange="updatePower()" id="mlPower">
+          <hr />
+        <div class="container" id="mlImages" style="display: none;text-align: center;">
+          <button class="btn btn-outline" onclick="makeMLArt()" style="width: 100%;">Transfer Styles</button>
+          <br />
+          <img id="content" width="150" src="content.jpg"/>
+          <p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
+          <p><label for="file" style="cursor: pointer;">Upload Style Image</label></p>
+          <img id="styleImg" height="150" src="style.jpg"/>
+          
+        </div>
+        
+      </div>
+      <div class="col-3">
+ 
+        <canvas id="stylized"  style="padding: 15px; width: 850px"></canvas>
+        <hr />
+        <button class="btn" id="btndownload2" style="font-size: 30px;"><i class="bi bi-download"></i></button>
+
       </div>
     </div>
    
   <br />
   <br />
 
-    </div>
+
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@magenta/image@^0.2.1"></script>
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
@@ -101,12 +128,34 @@
 </body>
 
 <script>
+
+var loadFile = function(event) {
+	var image = document.getElementById('styleImg');
+	image.src = URL.createObjectURL(event.target.files[0]);
+};
   window.onload = function(){
+
+
+
   var dwn = document.getElementById('btndownload')
+  var dwn2 = document.getElementById('btndownload2')
+  var mlInit = document.getElementById('btnmlinit');
+  var mlContent = document.getElementById('content');
   var canvas = document.getElementById('can')
+  var canvas2 = document.getElementById('stylized')
   // Event handler for download
   dwn.onclick = function(){
     download(canvas, new Date().toISOString()+'.png');
+  }
+
+  dwn2.onclick = function(){
+    download(canvas2, new Date().toISOString()+'.png');
+  }
+
+  mlInit.onclick = function(){
+    
+    mlContent.src = canvas.toDataURL("image/png;base64");
+    startML()
   }
 }
 
