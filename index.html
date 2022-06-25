@@ -94,13 +94,17 @@
           <input type="range" min="0.0" max="1.0" step="0.005" class="form-range" onchange="updatePower()" id="mlPower">
           <hr />
         <div class="container" id="mlImages" style="display: none;text-align: center;">
-          <button class="btn btn-outline" onclick="makeMLArt()" style="width: 100%;">Transfer Styles</button>
+          <button class="btn btn-dark" onclick="makeMLArt()" style="width: 100%;">Transfer Styles</button>
           <br />
+          <p>Source Image</p>
           <img id="content" width="150" src="content.jpg"/>
           <p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
-          <p><label for="file" style="cursor: pointer;">Upload Style Image</label></p>
-          <img id="styleImg" height="150" src="style.jpg"/>
           
+          <p>Style Image</p>
+          <img id="styleImg" height="150" src="style.jpg"/><br />
+          <p><label for="file" style="cursor: pointer;">Upload Style Image</label></p>
+          <br />
+          <button onclick="swapImages()" class="btn">Swap</button>
         </div>
         
       </div>

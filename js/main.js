@@ -35,7 +35,14 @@ async function startML() {
     mlImages.style.display = 'block';
     
 }
-
+function swapImages() {
+    const contentImg = document.getElementById('content');
+    const styleImg = document.getElementById('styleImg');
+    let contentValue = contentImg.src
+    let styleValue = styleImg.src
+    contentImg.src = styleValue
+    styleImg.src = contentValue
+}
 async function makeMLArt() {
     const model = new mi.ArbitraryStyleTransferNetwork();
     await model.initialize()
